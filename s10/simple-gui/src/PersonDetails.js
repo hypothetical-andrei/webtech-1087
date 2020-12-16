@@ -24,6 +24,10 @@ class PersonDetails extends React.Component {
     this.delete = (id) => {
       this.store.deleteOne(id)
     }
+
+    this.save = (id, car) => {
+      this.store.saveOne(id, car)
+    }
   }
 
   componentDidMount () {
@@ -41,7 +45,7 @@ class PersonDetails extends React.Component {
         i am the details page for {this.props.item}
         <div>
           {
-            this.state.cars.map(e => <Car item={e} key={e.id} onDelete={this.delete} />)
+            this.state.cars.map(e => <Car item={e} key={e.id} onDelete={this.delete} onSave={this.save} />)
           }
         </div>
         <AddCarForm onAdd={this.add} />
