@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      const employees = [{
+        employee_name: 'john',
+        employee_salary: 1000,
+        employee_age: 33
+      }, {
+        employee_name: 'jane',
+        employee_salary: 1000,
+        employee_age: 31
+      }]
+
+      window.onload = () => {
+        const employeesTable = document.getElementById('employees')
+        const content = employees.map((e) => `
+          <tr>
+            <td>${e.employee_name}</td>
+            <td>${e.employee_salary}</td>
+            <td>${e.employee_age}</td>
+          </tr>
+        `).join('')
+        employeesTable.innerHTML = content
+      }
+    </script>
+  </head>
+  <body>
+    <table id='employees'></table>
+  </body>
+</html>

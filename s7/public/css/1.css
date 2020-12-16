@@ -1,0 +1,17 @@
+body {
+  margin: 0px;
+  text-align: center;
+  line-height: 100vh;
+}
+
+.container {
+  display: inline-block;
+}
+
+.component {
+  height: 200px;
+  width: 200px;
+  background-color: lightblue;
+  text-align: center;
+  line-height: 200px;
+}
