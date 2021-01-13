@@ -147,7 +147,11 @@ app.put('/people/:pid/cars/:cid', async (req, res, next) => {
   try {
     const person = await models.Person.findByPk(req.params.pid)
     if (person) {
-      const cars = await person.getCars({ id: req.params.cid })
+      const cars = await person.getCars({ 
+        where : {
+          id: req.params.cid 
+        }
+      })
       const car = cars.shift()
       if (car) {
         car.maker = req.body.maker
@@ -171,7 +175,11 @@ app.delete('/people/:pid/cars/:cid', async (req, res, next) => {
   try {
     const person = await models.Person.findByPk(req.params.pid)
     if (person) {
-      const cars = await person.getCars({ id: req.params.cid })
+      const cars = await person.getCars({ 
+        where : {
+          id: req.params.cid 
+        }
+      })      
       const car = cars.shift()
       if (car) {
         await car.destroy()

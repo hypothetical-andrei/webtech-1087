@@ -2,3 +2,12 @@
   display: flex;
   justify-content: center;
 }
+
+.person-editor .ops-button {
+  margin-right: 20px;
+}
+
+.person-editor .ops-container {
+  display: flex;
+  justify-content: center;
+}

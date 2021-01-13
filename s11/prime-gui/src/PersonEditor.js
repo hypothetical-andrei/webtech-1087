@@ -7,6 +7,8 @@ import { Button } from 'primereact/button'
 import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext'
 
+import { withRouter } from 'react-router-dom'
+
 class PersonEditor extends React.Component {
   constructor () {
     super()
@@ -14,6 +16,7 @@ class PersonEditor extends React.Component {
     this.state = {
       people: [],
       isAddDialogVisible: false,
+      isNewRecord: true,
       person: {
         name: '',
         age: ''
@@ -22,15 +25,15 @@ class PersonEditor extends React.Component {
 
     this.store = PeopleStore
 
-    this.add = (person) => {
+    this.addPerson = (person) => {
       this.store.addOne(person)
     }
 
-    this.delete = (id) => {
+    this.deletePerson = (id) => {
       this.store.deleteOne(id)
     }
 
-    this.save = (id, person) => {
+    this.savePerson = (id, person) => {
       this.store.saveOne(id, person)
     }
     
@@ -46,18 +49,73 @@ class PersonEditor extends React.Component {
       })
     }
 
+    this.add = () => {
+      this.showAddDialog()
+      this.setState({
+        isNewRecord: true
+      })
+    }
+
+    this.save = () => {
+      if (this.state.isNewRecord) {
+        this.addPerson(this.state.person)
+      } else {
+        this.savePerson(this.state.person.id, this.state.person)
+      }
+      this.hideAddDialog()
+    }
+
     this.tableFooter = (
       <div className='table-footer'>
-        <Button className='p-button-rounded p-button-success' icon='pi pi-plus' onClick={this.showAddDialog} />
+        <Button className='p-button-rounded p-button-success' icon='pi pi-plus' onClick={this.add} />
       </div>
     )
 
     this.dialogFooter = (
       <div className='table-footer'>
-        <Button className='p-button-rounded p-button-success' label='save' icon='pi pi-save' />
+        <Button className='p-button-rounded p-button-success' label='save' icon='pi pi-save' onClick={this.save} />
       </div>
     )
 
+    this.edit = (rowData) => {
+      this.setState({
+        isAddDialogVisible: true,
+        isNewRecord: false,
+        person: rowData
+      })
+    }
+
+    this.delete = (id) => {
+      this.store.deleteOne(id)
+    }
+
+    this.handleChange = (evt) => {
+      const person = this.state.person
+      person[evt.target.name] = evt.target.value
+      this.setState({
+        person
+      })
+    }
+
+    this.select = (rowData) => {
+      this.props.history.push(`/persons/${rowData.id}`)
+    }
+
+    this.opsTemplate = (rowData) => {
+      return (
+        <div className='ops-container'>
+          <span className='ops-button'>
+            <Button className='p-button-rounded p-button-danger' icon='pi pi-trash' onClick={() => this.deletePerson(rowData.id)} />
+          </span>
+          <span className='ops-button'>
+            <Button className='p-button-rounded p-button-info' icon='pi pi-pencil' onClick={() => this.edit(rowData)} />
+          </span>
+          <span className='ops-button'>
+            <Button className='p-button-rounded p-button-info' icon='pi pi-search-plus' onClick={() => this.select(rowData)} />
+          </span>
+        </div>
+      )
+    }
   }
 
   componentDidMount () {
@@ -75,15 +133,16 @@ class PersonEditor extends React.Component {
         <DataTable value={this.state.people} header='List of owners' footer={this.tableFooter} >
           <Column header='Name' field='name' />
           <Column header='Age' field='age' />
+          <Column body={this.opsTemplate} />
         </DataTable>
         <Dialog header='Add a car owner' visible={this.state.isAddDialogVisible} onHide={this.hideAddDialog} footer={this.dialogFooter} className='p-fluid'>
           <div className='p-field'>
             <label htmlFor='name'>Name</label>
-            <InputText onChange={this.updatePerson} name='name' id='name' value={this.state.person.name} />
+            <InputText onChange={this.updatePerson} name='name' id='name' value={this.state.person.name} onChange={this.handleChange} />
           </div>
           <div className='p-field'>
             <label htmlFor='age'>Age</label>
-            <InputText onChange={this.updatePerson} name='age' id='age' value={this.state.person.age} />
+            <InputText onChange={this.updatePerson} name='age' id='age' value={this.state.person.age} onChange={this.handleChange} />
           </div>
         </Dialog>
       </div>
@@ -91,4 +150,4 @@ class PersonEditor extends React.Component {
   }
 }
 
-export default PersonEditor
+export default withRouter(PersonEditor)
